@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="56px" height="57px" viewBox="0 0 56 57" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <g id="icons8-calendar">
+    <path d="M0 34.9227L0 0L55.2851 0L55.2851 34.9227C55.2851 38.1258 52.6665 40.745 49.4641 40.745L5.82095 40.745C2.61859 40.745 0 38.1258 0 34.9227Z" transform="translate(0 16.00437)" id="Fill-1" fill="#CFD8DC" stroke="none" />
+    <path d="M55.2851 5.82231L55.2851 14.553L0 14.553L0 5.82231C0 2.6192 2.61859 0 5.82095 0L49.4641 0C52.6665 0 55.2851 2.6192 55.2851 5.82231Z" transform="translate(0 4.365334)" id="Fill-2" fill="#F44336" stroke="none" />
+    <path d="M8.72864 4.36534C8.72864 6.77221 6.77622 8.73067 4.36432 8.73067C1.95242 8.73067 0 6.77221 0 4.36534C0 1.95288 1.95242 0 4.36432 0C6.77622 0 8.72864 1.95288 8.72864 4.36534Z" transform="translate(36.37119 5.822304)" id="Fill-3" fill="#B71C1C" stroke="none" />
+    <path d="M8.72864 4.36534C8.72864 6.77221 6.77621 8.73067 4.36432 8.73067C1.95242 8.73067 0 6.77221 0 4.36534C0 1.95288 1.95242 0 4.36432 0C6.77621 0 8.72864 1.95288 8.72864 4.36534Z" transform="translate(10.18527 5.822304)" id="Fill-4" fill="#B71C1C" stroke="none" />
+    <path d="M2.90768 0C1.3086 0 0 1.3089 0 2.90836L0 10.1876C0 11.7857 1.3086 13.096 2.90768 13.096C4.50677 13.096 5.81536 11.7857 5.81536 10.1876L5.81536 2.90836C5.81536 1.3089 4.50677 0 2.90768 0Z" transform="translate(37.82782 0)" id="Fill-5" fill="#B0BEC5" stroke="none" />
+    <path d="M2.90768 0C1.3086 0 0 1.3089 0 2.90836L0 10.1876C0 11.7857 1.3086 13.096 2.90768 13.096C4.50677 13.096 5.81537 11.7857 5.81537 10.1876L5.81537 2.90836C5.81537 1.3089 4.50677 0 2.90768 0Z" transform="translate(11.64191 0)" id="Fill-6" fill="#B0BEC5" stroke="none" />
+    <path d="M0 5.82231L5.81537 5.82231L5.81537 0L0 0L0 5.82231Z" transform="translate(11.64191 24.73504)" id="Fill-7" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81537 5.82231L5.81537 0L0 0L0 5.82231Z" transform="translate(20.37054 24.73504)" id="Fill-8" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81536 5.82231L5.81536 0L0 0L0 5.82231Z" transform="translate(29.09918 24.73504)" id="Fill-9" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81536 5.82231L5.81536 0L0 0L0 5.82231Z" transform="translate(37.82782 24.73504)" id="Fill-10" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81537 5.82231L5.81537 0L0 0L0 5.82231Z" transform="translate(11.64191 33.46572)" id="Fill-11" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81537 5.82231L5.81537 0L0 0L0 5.82231Z" transform="translate(20.37054 33.46572)" id="Fill-12" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81536 5.82231L5.81536 0L0 0L0 5.82231Z" transform="translate(29.09918 33.46572)" id="Fill-13" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81536 5.82231L5.81536 0L0 0L0 5.82231Z" transform="translate(37.82782 33.46572)" id="Fill-14" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81537 5.82231L5.81537 0L0 0L0 5.82231Z" transform="translate(11.64191 42.19639)" id="Fill-15" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81537 5.82231L5.81537 0L0 0L0 5.82231Z" transform="translate(20.37054 42.19639)" id="Fill-16" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81536 5.82231L5.81536 0L0 0L0 5.82231Z" transform="translate(29.09918 42.19639)" id="Fill-17" fill="#90A4AE" stroke="none" />
+    <path d="M0 5.82231L5.81536 5.82231L5.81536 0L0 0L0 5.82231Z" transform="translate(37.82782 42.19639)" id="Fill-18" fill="#90A4AE" stroke="none" />
+  </g>
+</svg>

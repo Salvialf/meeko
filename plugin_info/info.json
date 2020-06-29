@@ -1,0 +1,20 @@
+{
+	"id" : "meeko",
+	"name" : "Meeko",
+	"description" : "Plugin pour intégrer le logiciel de gestion de crèche Meeko à Jeedom",
+	"licence" : "AGPL",
+	"author" : "Jeedom SAS",
+	"require" : "3.2",
+	"category" : "organization",
+	"hasDependency" : false,
+	"hasOwnDeamon" : false,
+	"maxDependancyInstallTime" : 0,
+	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
+	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
+	"link" : {
+		"forum":"Lien vers le forum",
+		"video" : "Lien vers une video"
+	},
+	"language" : ["fr_FR"],
+	"compatibility" : ["miniplus","smart","rpi","docker","diy"]
+}

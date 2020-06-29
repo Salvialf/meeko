@@ -1,0 +1,26 @@
+<div style="margin:5px;" class="cmd cmd-widget reportModeHidden test" data-type="action" data-subtype="other" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
+    <input type="text" value="" id="datepicker#id#" style="display:none;"/>
+    <button class='btn btn-xs btn-success' id="datebutton#id#"> #name_display# <i class="fas fa-calendar-day"></i></button>
+<script>
+//  $(document).ready(function() {
+    $('#datepicker#id#').datepicker();
+    $('#datebutton#id#').on('click', function() {
+      $('#datepicker#id#').datepicker('show');
+    });
+
+    $('#datepicker#id#').on('change', function() {
+      let select_day = $('#datepicker#id#').val();
+      jeedom.cmd.execute({id: '#id#', value: {selectedDate : select_day} });
+    });
+//});
+    jeedom.cmd.update['#id#'] = function(_options){
+      $('#datepicker#id#').val(_options.display_value);
+    }
+    jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'});
+</script>
+<style>
+#datepicker#id# + button {
+  background-color: rgb(50, 130, 60) !important;
+    }
+</style>
+</div>

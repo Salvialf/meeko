@@ -1,0 +1,118 @@
+[
+    {
+        "id": 83,
+        "name": "BB Loulou 1",
+        "logo_url": "https:\/\/d2ouc1dpnsgmd3.cloudfront.net\/accounts\/64\/nurseries\/83\/logos\/5aa91a7c069c6.jpegs?Expires=1594040306&Signature=M0NUS8SbinNy-fXh54E7sflOPc5UgCkJKG5ATTTEKHaunRbBCZU3kcn2Zz5QfG1sPOY-uvkumHjuCQx7DnBr-h3zLs6SwlA2UMgubfBgP3xz7GC2ADoCvfLcDKgyU5q9BlFU2xapiOuTzwlRYUBGAEor0Kj78S8Jxla-kWKNAxqixELTmnrsG-0kwX~-sJOoCeBEXlZKYSatH4PzqSk0iNx90atTYUE4QPH9vMAqJDONjXJhebyhrvjv~jN87iCEq2Ue-zSyPpQSBCPogyCNwV5Xlb14iMWsymCfe6IJ4KUBRemuYl0mAC6Fjcfn148gH~Czst4TJIPD8pIoKxeDyA__&Key-Pair-Id=APKAJI4M3G6DTJQ7MIAA",
+        "email": "bbloulou.microcreche@gmail.com",
+        "website": null,
+        "address": "41 rue de la Rivi\u00e8re",
+        "city": "SAINT PAVACE",
+        "state": null,
+        "country": "FR",
+        "zipcode": "72190",
+        "phone": "0970942946",
+        "mobile_phone": null,
+        "timezone": "Europe\/Paris",
+        "currency": "\u20ac",
+        "openingHours": [
+            {
+                "id": 1889,
+                "day": "mon",
+                "started_at": "07:00:00",
+                "ended_at": "19:30:00"
+            },
+            {
+                "id": 1890,
+                "day": "tue",
+                "started_at": "07:00:00",
+                "ended_at": "19:30:00"
+            },
+            {
+                "id": 1891,
+                "day": "wed",
+                "started_at": "07:00:00",
+                "ended_at": "19:30:00"
+            },
+            {
+                "id": 1892,
+                "day": "thu",
+                "started_at": "07:00:00",
+                "ended_at": "19:30:00"
+            },
+            {
+                "id": 1893,
+                "day": "fri",
+                "started_at": "07:00:00",
+                "ended_at": "19:30:00"
+            }
+        ],
+        "closedPeriods": [
+            {
+                "id": 1621,
+                "nursery_id": 83,
+                "name": "FERMETURE ETE 2020",
+                "started_at": 1595800800,
+                "ended_at": 1597615199
+            },
+            {
+                "id": 1622,
+                "nursery_id": 83,
+                "name": "FERMETURE NOEL 2020",
+                "started_at": 1609110000,
+                "ended_at": 1609714799
+            },
+            {
+                "id": 3337,
+                "nursery_id": 83,
+                "name": "FERMETURE PRINTEMPS",
+                "started_at": 1619388000,
+                "ended_at": 1619819999
+            },
+            {
+                "id": 3778,
+                "nursery_id": 83,
+                "name": "PONT",
+                "started_at": 1594591200,
+                "ended_at": 1594763999
+            }
+        ],
+        "holidays": [
+            {
+                "id": 2,
+                "name": "Lundi de P\u00e2ques"
+            },
+            {
+                "id": 6,
+                "name": "F\u00eate Nationale (France)"
+            },
+            {
+                "id": 12,
+                "name": "8 Mai"
+            },
+            {
+                "id": 11,
+                "name": "F\u00eate du Travail"
+            },
+            {
+                "id": 7,
+                "name": "Assomption"
+            },
+            {
+                "id": 1,
+                "name": "Jour de l'an"
+            },
+            {
+                "id": 8,
+                "name": "La Toussaint"
+            },
+            {
+                "id": 9,
+                "name": "Armistice"
+            },
+            {
+                "id": 4,
+                "name": "Lundi de Pentec\u00f4te"
+            }
+        ]
+    }
+]

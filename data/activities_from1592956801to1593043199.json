@@ -1,0 +1,92 @@
+{
+    "1251": {
+        "diapers": [
+            {
+                "id": 1830999,
+                "kid_id": 1251,
+                "type": "toilet",
+                "poop": null,
+                "pee": true,
+                "ear": false,
+                "eyes": false,
+                "cream": false,
+                "nose": false,
+                "done_at": 1592985036,
+                "note": null
+            },
+            {
+                "id": 1831004,
+                "kid_id": 1251,
+                "type": "toilet",
+                "poop": null,
+                "pee": true,
+                "ear": false,
+                "eyes": false,
+                "cream": false,
+                "nose": false,
+                "done_at": 1592990736,
+                "note": null
+            }
+        ],
+        "meals": [
+            {
+                "id": 1666390,
+                "kid_id": 1251,
+                "milk": null,
+                "breastfeeding": 0,
+                "rating": 2,
+                "scheduled_at": null,
+                "done_at": 1592984461,
+                "note": null
+            },
+            {
+                "id": 1667164,
+                "kid_id": 1251,
+                "milk": null,
+                "breastfeeding": null,
+                "rating": 2,
+                "scheduled_at": null,
+                "done_at": 1592991025,
+                "note": "Tout les concombres, 3\/4 du plat, tout le fromage et les deux petit suisses"
+            }
+        ],
+        "presences": [
+            {
+                "id": 967459,
+                "kid_id": 1251,
+                "droped_at": 1592984461,
+                "picked_up_at": 1592996442,
+                "pick_up_note": null,
+                "drop_note": null
+            }
+        ],
+        "observations": [
+            {
+                "id": 161490,
+                "kid_id": 1251,
+                "note": "Pouvez-vous nous apporter des couches pour Max et Elyo, s'il vous pla\u00eet",
+                "done_at": 1592995542
+            }
+        ],
+        "activities": [
+            {
+                "id": 180785,
+                "nursery_id": 83,
+                "name": "Chants & Comptines",
+                "category": "Eveil sonore",
+                "category_icon": "music",
+                "done_at": 1592984436,
+                "note": null
+            },
+            {
+                "id": 180787,
+                "nursery_id": 83,
+                "name": "Balade",
+                "category": "Ext\u00e9rieur de l'\u00e9tablissement",
+                "category_icon": "outside",
+                "done_at": 1592985636,
+                "note": "Au parc"
+            }
+        ]
+    }
+}

@@ -1,0 +1,43 @@
+<div class="eqLogic eqLogic-widget allowResize allowReorderCmd #custom_layout# #eqLogic_class# #class#" data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#" style="width: #width#;height: #height#;#style#">
+	<center class="widget-name">
+		<span class="warning" title="#alert_name#">
+			<i class='#alert_icon#'></i>
+		</span>
+		<span class="cmd refresh pull-right cursor" data-cmd_id="#refresh_id#">
+			<i class="fas fa-sync"></i>
+		</span>
+		<span class="reportModeVisible">#name_display# <span class="object_name">#object_name#</span></span>
+		<a href="#eqLink#" class="reportModeHidden">#name_display# <span class="object_name">#object_name#</span></a>
+	</center>
+	<div class="#isVerticalAlign#">
+		<center>
+    <form class="content-sm" id="myform#select_day_id#">
+      <input type="date" data-cmd_id="#select_day_id#" value="#day#"/>
+      <a class='btn btn-xs btn-success execute'>Choix jour</a>
+    </form>
+			<h2>le #day#</h2>
+      <img style="border-radius:100%;" src="#picture#" height=80 />
+		</center>
+	</div>
+<script>
+$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
+  jeedom.cmd.execute({id: '#refresh_id#'});
+});
+$('.eqLogic[data-eqLogic_uid=#uid#] .execute').on('click', function() {
+ let select_day = $('.eqLogic[data-eqLogic_uid=#uid#] #myform#select_day_id# > input[type="date"]').val();
+ jeedom.cmd.execute({id: '#select_day_id#', value: {selectedDate : select_day} });
+});
+if ('#presence#' != 1) {
+  $('.eqLogic[data-eqLogic_uid=#uid#] img').css({'filter': 'grayscale(100%)', 'opacity':'0.5'});
+}
+</script>
+<style>
+@font-face {
+  font-family: "grandHotel";
+  src: url("plugins/meeko/desktop/fonts/GrandHotel-Regular.ttf") format("truetype");
+}
+h2 {
+  font-family: "grandHotel";
+}
+</style>
+</div>

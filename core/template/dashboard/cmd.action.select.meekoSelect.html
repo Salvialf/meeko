@@ -1,0 +1,23 @@
+<div class="cmd cmd-widget reportModeHidden" data-type="action" data-subtype="select" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
+ <form class="form-inline">
+  <div class="form-group">
+    <div class="input-group">
+       <div class="input-group-addon cmdName #hide_name#">#name_display#
+         <sub class="countOptions"></sub>
+      </div>
+    <select class="form-control selectCmd" id="meekoSelect#id#">#listValue#</select> <!-- add 'multiple' class to see all the values at once -->
+    </div>
+  </div>
+</form>
+  <script>
+    $('.cmd[data-cmd_uid=#uid#] .countOptions').html('('+(document.getElementById('meekoSelect#id#').length -1)+')');
+    $(".cmd[data-cmd_uid=#uid#] .selectCmd").on('change', function () {
+      jeedom.cmd.execute({id: '#id#', value: {select: $(this).value()}})
+    })
+
+    jeedom.cmd.update['#id#'] = function(_options) {
+      $(".cmd[data-cmd_uid=#uid#] .selectCmd").val(_options.display_value)
+    }
+  //  jeedom.cmd.update['#id#']({display_value:'#state#'});
+  </script>
+</div>
