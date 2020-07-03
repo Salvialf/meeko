@@ -6,13 +6,15 @@ $plugin = plugin::byId('meeko');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 /*
-$photosJson = file_get_contents('plugins/meeko/data/photos.json');
-$photos = json_decode($photosJson, true);
-
+$kids = meeko::pull('kids');
 echo '<pre>';
-var_dump($photos['data']);
-echo '</pre>';
-*/
+var_dump($kids[1]['gender']);
+echo '</pre>';*/
+//$date = date('Y-m-d');
+//echo strtotime($date.'T00:00:01 UTC');
+//echo  (time() + 7*24*3600);
+//$files = ls($path, 'cmd.*', false, array('files', 'quiet'));
+//echo(ls(__DIR__ . '/../../data', 'nurseries_*.json')[0]);
 ?>
 
 <div class="row row-overflow">
@@ -34,13 +36,13 @@ echo '</pre>';
     <br>
     <span>{{Configuration}}</span>
   </div>
-	<?php $nursery = meeko::getData('nurseries');
+	<?php $nursery = meeko::pull('nurseries');
 	if (!empty($nursery)) {
 		?>
-	<div class="cursor eqLogicAction logoSecondary" data-name="<?= $nursery[0]->name; ?>" id="nurseryModal">
-		<img style="padding-top:0;" src="<?= $nursery[0]->logo_url; ?>" class="img-thumbnail"/>
+	<div class="cursor eqLogicAction logoSecondary" data-name="<?= $nursery[0]['name']; ?>" id="nurseryModal">
+		<img style="padding-top:0;" src="<?= $nursery[0]['logo_url']; ?>" class="img-thumbnail"/>
 		<br>
-		<span><?= $nursery[0]->name; ?></span>
+		<span><?= $nursery[0]['name']; ?></span>
 	</div>
 <?php } ?>
   </div>
@@ -115,13 +117,13 @@ foreach (jeeObject::all() as $object) {
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
 		</div>
 	</div>
-  <!--     <div class="form-group">
-        <label class="col-sm-3 control-label">{{template param 1}}</label>
+       <div class="form-group">
+        <label class="col-sm-3 control-label">{{Widget Application}}</label>
         <div class="col-sm-3">
-            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="city" placeholder="param1"/>
+            <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="widgetApp"/>
         </div>
     </div>
-	-->
+
 </fieldset>
 </form>
 </div>

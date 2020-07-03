@@ -1,13 +1,15 @@
-<div style="margin-bottom:5px;" class="cmd cmd-widget reportModeHidden test" data-type="action" data-subtype="other" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
-    <input type="text" value="" id="datepicker#id#" style="display:none;"/>
-    <button class='btn btn-success' id="datebutton#id#" style="display:flex;align-items:center;" >
-      <span style="margin-right:5px;"> #name_display# </span>
-      <i class="fas fa-calendar-day"></i>
+<div style="margin-bottom:5px;" class="cmd cmd-widget reportModeHidden" data-type="action" data-subtype="other" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
+    <div class="form-group">
+      <input type="date" id="datepicker#id#" style="display:none;"/>
+        <button class='btn btn-success' id="datebutton#id#" style="display:flex;align-items:center;" >
+          <span style="margin-right:5px;"> #name_display# </span>
+          <i class="fas fa-calendar-day"></i>
+       </button>
+    </div>
   <!--    <svg  width="15px" height="15px" viewBox="0 0 56 57">
         <use xlink:href="plugins/meeko/desktop/css/meeko.icons.svg#icons8-calendar"></use>
       </svg>
      -->
-  </button>
 <script>
     $('#datepicker#id#').datepicker();
     $('#datebutton#id#').on('click', function() {
@@ -25,8 +27,8 @@
     jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'});
 </script>
 <style>
-#datepicker#id# + button {
+/*#datepicker#id# + button {
   background-color: rgb(50, 130, 60) !important;
-    }
+}*/
 </style>
 </div>

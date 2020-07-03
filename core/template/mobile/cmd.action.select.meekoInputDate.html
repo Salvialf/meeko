@@ -1,0 +1,18 @@
+<div style="margin-bottom:5px;" class="cmd cmd-widget reportModeHidden" data-type="action" data-subtype="other" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
+  <form>
+    <div class="form-group col-xs-8">
+      <input type="date" value="" id="datepicker#id#"/>
+    </div>
+  </form>
+<script>
+    $('#datepicker#id#').on('change', function() {
+      let select_day = $('#datepicker#id#').val();
+      jeedom.cmd.execute({id: '#id#', value: {selectedDate : select_day} });
+    });
+
+    jeedom.cmd.update['#id#'] = function(_options){
+      $('#datepicker#id#').val(_options.display_value);
+    }
+    jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'});
+</script>
+</div>

@@ -27,28 +27,28 @@ try {
     ajax::init(true);
 
     if (init('action') == 'syncMeeko') {
-      $kids = meeko::getData('kids');
-      foreach ($kids as $key => $value)
+      $kids = meeko::pull('kids');
+      for ($i = 0; $i < count($kids); $i++)
   		{
-  			$eqLogic = eqLogic::byLogicalId('kid' . $kids[$key]->id, 'meeko');
+  			$eqLogic = eqLogic::byLogicalId('kid' . $kids[$i]['id'], 'meeko');
   			if (!is_object($eqLogic))
   			{
-  				log::add('meeko', 'debug', 'Création de l\'Enfant n°' . $kids[$key]->id . ' : ' . $kids[$key]->first_name . ' ' . $return[$key]->last_name);
+  				log::add('meeko', 'debug', 'Création de l\'Enfant n°' . $kids[$i]['id'] . ' : ' . $kids[$i]['first_name'] . ' ' . $return[$i]['last_name']);
   				$eqLogic = new meeko();
-    			$eqLogic->setName($kids[$key]->first_name . ' (Crèche)');
+    			$eqLogic->setName('Crèche ' . $kids[$i]['first_name']);
     			$eqLogic->setIsEnable(1);
     			$eqLogic->setIsVisible(1);
-          $eqLogic->setDisplay('height','450px');
-          $eqLogic->setDisplay('width', '390px');
+          $eqLogic->setDisplay('height','532px');
+          $eqLogic->setDisplay('width', '312px');
   			}
-  			$eqLogic->setLogicalId('kid' . $kids[$key]->id);
+  			$eqLogic->setLogicalId('kid' . $kids[$i]['id']);
   			$eqLogic->setEqType_name('meeko');
-  			$eqLogic->setConfiguration('id', $kids[$key]->id);
-  			$eqLogic->setConfiguration('first_name', $kids[$key]->first_name);
-  			$eqLogic->setConfiguration('last_name', $kids[$key]->last_name);
-  			$eqLogic->setConfiguration('gender', $kids[$key]->gender);
-  			$eqLogic->setConfiguration('birthdate', $kids[$key]->birthdate);
-  			$eqLogic->setConfiguration('avatar_url', $kids[$key]->avatar_url);
+  			$eqLogic->setConfiguration('id', $kids[$i]['id']);
+  			$eqLogic->setConfiguration('first_name', $kids[$i]['first_name']);
+  			$eqLogic->setConfiguration('last_name', $kids[$i]['last_name']);
+  			$eqLogic->setConfiguration('gender', $kids[$i]['gender']);
+  			$eqLogic->setConfiguration('birthdate', $kids[$i]['birthdate']);
+  			$eqLogic->setConfiguration('avatar_url', $kids[$i]['avatar_url']);
   			$eqLogic->save();
       }
       ajax::success();

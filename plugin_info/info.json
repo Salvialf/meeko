@@ -1,7 +1,7 @@
 {
 	"id" : "meeko",
-	"name" : "Meeko",
-	"description" : "Plugin pour intégrer le logiciel de gestion de crèche Meeko à Jeedom",
+	"name" : "Meeko Family",
+	"description" : "Plugin permettent d'intégrer le logiciel de gestion de crèche Meeko Family à Jeedom",
 	"licence" : "AGPL",
 	"author" : "Jeedom SAS",
 	"require" : "3.2",

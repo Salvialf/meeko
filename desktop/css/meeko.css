@@ -1,6 +1,6 @@
 @font-face {
   font-family: "grandHotel";
-  src: url("plugins/meeko/desktop/fonts/GrandHotel-Regular.ttf") format("truetype");
+  src: url("../fonts/GrandHotel-Regular.ttf") format("truetype");
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:focus,

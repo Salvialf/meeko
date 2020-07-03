@@ -20,23 +20,19 @@ if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-$nursery = file_get_contents('plugins/meeko/data/nurseries.json');
-$nursery = json_decode($nursery, true);
-
-meeko::getData('staffs');
-$staff = file_get_contents('plugins/meeko/data/staffs.json');
-$staff = json_decode($staff, true);
+$nursery = meeko::pull('nurseries');
+$staff = meeko::pull('staffs');
 ?>
 
 <div class="row text-center">
 
   <div class="col-sm-4">
-  <img src="<?= $nursery[0]['logo_url'] ?>" class="img-thumbnail">
-</div>
+    <img src="<?= $nursery[0]['logo_url'] ?>" class="img-responsive img-thumbnail pull-right">
+  </div>
 
   <div class="col-sm-4">
     <address>
-  <h3 style="font-family:grandHotel;font-weight:bold;"><?= $nursery[0]['name'] ?></h3>
+  <h2 style="font-family:grandHotel;font-weight:bold;"><?= $nursery[0]['name'] ?></h2>
   <span><i class="fas fa-map-marker-alt"></i> <?= $nursery[0]['address'] ?><br>
   <?= $nursery[0]['zipcode'] ?> <?= $nursery[0]['city'] ?></span><br><br>
   <a href="tel:<?= $nursery[0]['phone'] ?>"><i class="fas fa-phone-alt"></i> <?= $nursery[0]['phone'] ?></a><br>
@@ -45,53 +41,53 @@ $staff = json_decode($staff, true);
 </div>
 
 </div>
-
+<hr>
 <div class="row text-center">
-
-  <div class="col-sm-3">
-  <h3 style="font-family:grandHotel;font-weight:bold;">{{Horaires}}</h3>
-  <table style="margin-left:auto; margin-right:auto;">
-  <?php $english_day = array('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
-    $french_day = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
-    for ($i = 0; $i < count($nursery[0]['openingHours']); $i++)
-  {
-    echo '<tr><th>'.str_replace($english_day, $french_day, $nursery[0]['openingHours'][$i]['day']) . ' : </th><td>' . substr($nursery[0]['openingHours'][$i]['started_at'],0,-3) . ' - ' . substr($nursery[0]['openingHours'][$i]['ended_at'],0,-3) . '</td></tr>';
-  }
-  ?>
+  <div class="col-xs-12 col-md-10 col-md-offset-1">
+  <table style="margin-left:auto; margin-right:auto;margin-bottom:0;" class="table table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th style="font-family:grandHotel;font-weight:bold;" class="col-xs-12 col-sm-4 text-center"><h2>{{Horaires}}</h2></th>
+          <th style="font-family:grandHotel;font-weight:bold;" class="col-xs-12 col-sm-4 text-center"><h2>{{Fermetures}}</h2></th>
+          <th style="font-family:grandHotel;font-weight:bold;" class="col-xs-12 col-sm-4 text-center"><h2>{{Fériés}}</h2></th>
+        </tr>
+      </thead>
   </table>
-  </div>
-
-  <div class="col-sm-4">
-    <h3 style="font-family:grandHotel;font-weight:bold;">{{Fermetures}}</h3>
-    <table style="margin-left:auto; margin-right:auto;">
-      <?php for ($i = 0; $i < count($nursery[0]['closedPeriods']); $i++)
-      {
-        echo '<tr><th>'.$nursery[0]['closedPeriods'][$i]['name'] . ' : </th><td> du ' . date('d/m/Y', $nursery[0]['closedPeriods'][$i]['started_at']) . ' au ' . date('d/m/Y', $nursery[0]['closedPeriods'][$i]['ended_at']) . '</td></tr>';
-      }
-      ?>
+        <table class="col-xs-12 col-sm-4">
+    <?php $english_day = array('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
+          $french_day = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
+          for ($i = 0; $i < count($nursery[0]['openingHours']); $i++)
+          {
+          echo '<tr><td>'.str_replace($english_day, $french_day, $nursery[0]['openingHours'][$i]['day']) . ' : ' . substr($nursery[0]['openingHours'][$i]['started_at'],0,-3) . ' - ' . substr($nursery[0]['openingHours'][$i]['ended_at'],0,-3) . '</td></tr>';
+          }
+          ?>
+        </table>
+        <table class="col-xs-12 col-sm-4">
+          <?php
+          for ($j = 0; $j < count($nursery[0]['closedPeriods']); $j++)
+          {
+          echo '<tr><td>'.$nursery[0]['closedPeriods'][$j]['name'] . ' : ' . date('d/m/Y', $nursery[0]['closedPeriods'][$j]['started_at']) . ' au ' . date('d/m/Y', $nursery[0]['closedPeriods'][$j]['ended_at']) . '</td></tr>';
+          }
+          ?>
+        </table>
+          <table class="col-xs-12 col-sm-4">
+            <?php
+          for ($k = 0; $k < count($nursery[0]['holidays']); $k++)
+          {
+            echo '<tr><td>'.$nursery[0]['holidays'][$k]['name'] . ' </td></tr>';
+          }
+        ?>
     </table>
   </div>
-
-  <div class="col-sm-3">
-    <h3 style="font-family:grandHotel;font-weight:bold;">{{Fériés}}</h3>
-    <table style="margin-left:auto; margin-right:auto;">
-      <?php for ($i = 0; $i < count($nursery[0]['holidays']); $i++)
-      {
-        echo '<tr><th>'.$nursery[0]['holidays'][$i]['name'] . ' </th></tr>';
-      }
-      ?>
-    </table>
-  </div>
-</div>
 
 <div class="row text-center">
-  <div class="col-xs-12 col-md-10">
-  <h3 style="font-family:grandHotel;font-weight:bold;">{{L'équipe}}</h3>
+  <div class="col-xs-12 col-md-10 col-md-offset-1">
+  <h2 style="font-family:grandHotel;font-weight:bold;">{{L'équipe}}</h2>
     <?php for ($i = 0; $i < count($staff); $i++)
     {
-      echo '<div class="col-md-3">';
+      echo '<div class="col-xs-6 col-md-3">';
       echo '<img src="' . $staff[$i]['avatar_url'] . '" height=80 width=80 class="img-circle">';
-      echo '<h4> ' . $staff[$i]['first_name'] . ' ' . $staff[$i]['last_name'] . ' </h4>';
+      echo '<h3 style="font-family:grandHotel;"> ' . $staff[$i]['first_name'] . ' ' . $staff[$i]['last_name'] . ' </h3>';
       echo '<span>' . $staff[$i]['job'] . '</span>';
       echo '<span>' . $staff[$i]['biography'] . '</span>';
       echo '</div>';

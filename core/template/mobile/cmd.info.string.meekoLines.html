@@ -4,20 +4,41 @@
    <span class="state"></span>
   </div>
 	<script>
+			var logicalId = $('.cmd[data-cmd_id=#id#]').data('logical_id');
+			var icons = {
+				'day':'<i class="icon_green fas fa-calendar-day"></i>',
+				'presences' : '<i class="fab fa-creative-commons-by"></i>',
+				'temperatures' : '<i class="fas fa-temperature-high"></i>',
+				'observations' : '<i class="far fa-eye"></i>',
+				'diapers' : '<i class="fas fa-bath"></i>',
+				'activities' : '<i class="fas fa-dice"></i>',
+				'meals' : '<i class="fas fa-utensils"></i>',
+				'naps' : '<i class="fas fa-bed"></i>',
+				'photos' : '<i class="fas fa-camera"></i>',
+				'drugs' : '<i class="fas fa-prescription-bottle-alt"></i>',
+				'weights' : '<i class="fas fa-weight"></i>'
+			 };
+
+		 for (var activity in icons) {
+			 if (logicalId == activity) {
+		     var value = icons[activity];
+		     $('.cmd[data-cmd_id=#id#]').find('#meekoActivity').prepend(value);
+			 }
+		 }
+
 		jeedom.cmd.update['#id#'] = function(_options) {
 			var cmd = $('.cmd[data-cmd_id=#id#]');
 			cmd.attr('title','{{Date de valeur}} : '+_options.valueDate+'<br/>{{Date de collecte}} : '+_options.collectDate)
 			if (_options.display_value != '') {
-				if (cmd.data('logical_id') == 'day') {
+				if (logicalId == 'day') {
 	    		let weekFull = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 					let date = new Date(_options.display_value);
 					let day = weekFull[date.getDay()]+' '+date.toLocaleString('fr-FR',{year: 'numeric', month: 'long', day: 'numeric'});
 					cmd.find('.state').empty().append(day);
 				} else {
 					cmd.find('.state').empty().append(_options.display_value);
-					cmd.show();
 				}
-			} else {
+			}else {
 				cmd.hide();
 			}
 

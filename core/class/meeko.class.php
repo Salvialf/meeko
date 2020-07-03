@@ -23,22 +23,24 @@ class meeko extends eqLogic
 	/*     * *************************Attributs****************************** */
 
 	private	$meekoCategories = [
-		'day' => 'Jour',
-		'presences' => 'Pointage',
-		'temperatures' => 'Température',
-		'observations' => 'Observation',
-		'diapers' => 'Hygiène',
-		'activities' => 'Activité',
-		'meals' => 'Repas',
-		'naps' => 'Sommeil',
-		'photos' => 'Photo',
-		'drugs' => 'Médicament',
-		'weights' => 'Pesée'
+		'day' => ['Jour', '<i class="fas fa-calendar-day"></i>'],
+		'presences' => ['Pointage', '<i class="fab fa-creative-commons-by"></i>'],
+		'observations' => ['Observation', '<i class="far fa-eye"></i>'],
+		'diapers' => ['Hygiène', '<i class="fas fa-bath"></i>'],
+		'activities' => ['Activité', '<i class="fas fa-dice"></i>'],
+		'meals' => ['Repas', '<i class="fas fa-utensils"></i>'],
+		'naps' => ['Sommeil', '<i class="fas fa-bed"></i>'],
+		'temperatures' => ['Température', '<i class="fas fa-temperature-high"></i>'],
+		'drugs' => ['Médicament', '<i class="fas fa-prescription-bottle-alt"></i>'],
+		'weights' => ['Pesée', '<i class="fas fa-weight"></i>'],
+		'photos' => ['Photo', '<i class="fas fa-camera"></i>']
 	];
 	private $diapers_en = array('diaper', 'potty', 'toilet', 'liquid', 'soft', 'normal', 'hard', 'null');
 	private $diapers_fr = array('dans la couche ', 'sur le pot ', 'aux toilettes ', 'selles liquides ', 'selles molles ', 'selles normales ', 'selles dures ', 'null');
 	private $meals_en = array('null', '0', '1', '2');
 	private $meals_fr = array('n\'a rien mangé ', 'a peu mangé ', 'a bien mangé ', 'a tout mangé ');
+
+	public static $_widgetPossibility = array('custom' => true, 'custom::layout' => false);
 
 	/*     * ***********************Methode static*************************** */
 
@@ -85,8 +87,19 @@ class meeko extends eqLogic
 		return $return->token;
 	}
 
-	public static function getData($type, $params = null)
+	public static function pull($type, $params = null)
 	{
+		log::add('meeko', 'debug', 'pull : ' . $type . $params);
+		$today = date('Y-m-d');
+		$file_exists = file_exists('/var/www/html/plugins/meeko/data/'.$type.'_'.strtotime($today.'T00:00:01 UTC').'.json');
+
+		if ($file_exists && empty($params))
+		{
+			log::add('meeko', 'debug', 'Utilisation du fichier '.ls(__DIR__ . '/../../data', $type.'_*.json')[0].' existant');
+			$returnJson = file_get_contents(__DIR__ . '/../../data/' . ls(__DIR__ . '/../../data', $type.'_*.json')[0]);
+			return json_decode($returnJson, true);
+		}
+
 		$token = config::byKey('token', 'meeko');
 		$token = (empty($token)) ? meeko::getToken() : $token;
 
@@ -116,9 +129,10 @@ class meeko extends eqLogic
 		));
 		$response = curl_exec($curl);
 		curl_close($curl);
+		$return = json_decode($response, true);
 
-		if ($type == 'kids' && !empty($params)) {
-			$return = json_decode($response, true);
+		if ($type == 'kids' && !empty($params))
+		{
 			foreach ($return as $key => $value)
 			{
 				foreach ($value as $type => $activities)
@@ -134,12 +148,21 @@ class meeko extends eqLogic
 
 			return $filtered;
 		}
-
-		$return = json_decode($response);
-		$jsonFile = '/var/www/html/plugins/meeko/data/'.$type.'.json';
-		file_put_contents($jsonFile, json_encode($return, JSON_PRETTY_PRINT));
-
-		return $return;
+		else
+		{
+			if (!$file_exists)
+			{
+				$previousJsonFile = ls(__DIR__ . '/../../data', $type.'_*.json')[0];
+				log::add('meeko', 'debug', 'Fichier Json précédent : ' . $previousJsonFile);
+				if (!empty($previousJsonFile))
+				{
+					unlink(__DIR__ . '/../../data/'.$previousJsonFile);
+				}
+				$jsonFile = '/var/www/html/plugins/meeko/data/'.$type.'_'.strtotime($today.'T00:00:01 UTC').'.json';
+				file_put_contents($jsonFile, json_encode($return, JSON_PRETTY_PRINT));
+			}
+			return $return;
+		}
 	}
 
 	public static function cron15($_eqLogic_id = null)
@@ -207,17 +230,21 @@ class meeko extends eqLogic
 			$presenceCmd->setSubType('binary');
 			$presenceCmd->save();
 
-			foreach ($this->meekoCategories as $category => $namefr)
+			foreach ($this->meekoCategories as $category => $catOptions)
 			{
 				$categoryCmd = '';
 				$categoryCmd = $this->getCmd(null, $category);
 				if (!is_object($categoryCmd))
 				{
 					$categoryCmd = new meekoCmd();
-					$categoryCmd->setName(__($namefr, __FILE__));
+					$categoryCmd->setName(__($catOptions[0], __FILE__));
+					$categoryCmd->setDisplay('icon', $catOptions[1]);
+					$categoryCmd->setDisplay('showIconAndNamedashboard', 1);
+					$categoryCmd->setDisplay('showIconAndNamemobile', 1);
+					$categoryCmd->setTemplate('dashboard', 'meeko::meekoLines');
+					$categoryCmd->setTemplate('mobile', 'meeko::meekoLines');
 		      $categoryCmd->setOrder($order);
 		      $order ++;
-					$categoryCmd->setTemplate('dashboard', 'meeko::meekoLines');
 				}
 				$categoryCmd->setLogicalId($category);
 				$categoryCmd->setEqLogic_id($this->getId());
@@ -230,13 +257,15 @@ class meeko extends eqLogic
 				if (!is_object($selectCategoryCmd))
 				{
 					$selectCategoryCmd = new meekoCmd();
-					$selectCategoryCmd->setName(__('Choisir '.$namefr, __FILE__));
+					$selectCategoryCmd->setName(__('Choisir '.$catOptions[0], __FILE__));
 		      $selectCategoryCmd->setOrder($order);
 		      $order ++;
 					if ($category == 'day') {
 					$selectCategoryCmd->setTemplate('dashboard', 'meeko::meekoInputDate');
+					$selectCategoryCmd->setTemplate('mobile', 'meeko::meekoInputDate');
 				} else {
 					$selectCategoryCmd->setTemplate('dashboard', 'meeko::meekoSelect');
+					$selectCategoryCmd->setTemplate('mobile', 'meeko::meekoSelect');
 				}
 					$selectCategoryCmd->setValue($categoryCmd->getId());
 				}
@@ -255,7 +284,7 @@ class meeko extends eqLogic
 	}
 
 	public function getPhotoById($id) {
-	//	$photosObj = meeko::getData('photos');
+	//	$photosObj = meeko::pull('photos');
 
 		$photosJson = file_get_contents('/var/www/html/plugins/meeko/data/photos.json');
 		$photos = json_decode($photosJson, true);
@@ -270,37 +299,62 @@ class meeko extends eqLogic
 		}
 	}
 
-/*
 	public function toHtml($_version = 'dashboard') {
+		if ($this->getConfiguration('widgetApp') != 1)
+		{
+			return parent::toHtml();
+		}
+
 		$replace = $this->preToHtml($_version);
 		if (!is_array($replace)) {
 			return $replace;
 		}
-		$version = jeedom::versionAlias($_version);
+		$_version = jeedom::versionAlias($_version);
 
-		$date = (!empty($this->getCmd(null, 'day')->execCmd())) ? $this->getCmd(null, 'day')->execCmd() : date('Y-m-d');
-		$data = file_get_contents('/var/www/html/plugins/meeko/data/activities_from' . strtotime($date.'T00:00:01 UTC') . 'to' . strtotime($date.'T23:59:59 UTC').'.json');
- 		$activities = json_decode($data, true);
-		$kid = $this->getConfiguration('id');
-
-	//	log::add('meeko', 'debug', 'Datas '.print_r($activities, true));
-		$replace['#day#'] = $date;
+		$replace['#day#'] = $this->getCmd(null, 'day')->execCmd();
 		$replace['#picture#'] = $this->getConfiguration('avatar_url');
-		$replace['#select_day_id#'] = $this->getCmd(null, 'select_day')->getid();
+		$replace['#select_day#'] = $this->getCmd(null, 'select_day')->toHtml();
 		$replace['#presence#'] = $this->getCmd(null, 'presence')->execCmd();
 
-//		$replace['#activity#'] = '';
-//		$activity_template = getTemplate('core', $version, 'activity', 'meeko');
-	//	$tEvent = getTemplate('core', $version, 'activity', 'meeko');
+		$activity_template = getTemplate('core', $_version, 'activity', 'meeko');
+		$activity_display = '';
 
-//		$dEvent .= template_replace($replaceCmd, $tEvent);
+		$cmdsList = $this->getCmd('info');
+		foreach ($cmdsList as $cmd) {
+			$cmdLogicalId = $cmd->getLogicalId();
 
-//		$replace['#activity#'] .= template_replace($replaceActivity, $activity_template);
-//		$replace['#condition#'] = 'test';
-
-		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'tmplMeeko', 'meeko')));
+			if ($cmdLogicalId != 'day' && $cmdLogicalId != 'presence') {
+				$cmdValue = $cmd->execCmd();
+				if (!empty($cmdValue)) {
+					$cmdValues = explode(" : ", $cmdValue);
+					$replaceCmd = array(
+						'#logicalId#' => $cmdLogicalId,
+						'#activityid#' => $cmd->getId(),
+						'#activitylist#' => $this->getCmd('action', 'select_' . $cmdLogicalId)->getConfiguration('listValue')
+					);
+					if (!empty($cmdValues[1]))
+					{
+						$replaceCmd['#activitytime#'] = $cmdValues[0];
+						$replaceCmd['#activitycontent#'] = $cmdValues[1];
+					}
+					else {
+						$replaceCmd['#activitytime#'] = '';
+						$replaceCmd['#activitycontent#'] = $cmdValues[0];
+					}
+					if ($cmd->getDisplay('showIconAndName' . $_version, 0) == 1) {
+						$replaceCmd['#name_display#'] = $cmd->getDisplay('icon') . ' ' . $cmd->getName();
+					}
+					else {
+						$replaceCmd['#name_display#'] = $cmd->getName();
+					}
+					$activity_display .= template_replace($replaceCmd, $activity_template);
+				}
+			}
+		}
+		$replace['#activities#'] = $activity_display;
+		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $_version, 'tmplMeeko', 'meeko')));
 	}
-*/
+
 	/*
 	    * Non obligatoire mais ca permet de déclencher une action après modification de variable de configuration
 	   public static function postConfig_<Variable>() {
@@ -315,18 +369,29 @@ class meeko extends eqLogic
 
 	public function updateCategories()
 	{
-		$date = (!empty($this->getCmd(null, 'day')->execCmd())) ? $this->getCmd(null, 'day')->execCmd() : date('Y-m-d');
+		if (!empty($this->getCmd(null, 'day')->execCmd()))
+		{
+			$date = $this->getCmd(null, 'day')->execCmd();
+		}
+		else {
+			$date = date('Y-m-d');
+			$this->getCmd(null, 'day')->event($date);
+		}
 		log::add('meeko', 'debug', 'Récupération des données en date du '.date('d/m/Y', strtotime($date)).' pour '.$this->getName());
-		$date = '?from=' . strtotime($date.'T00:00:01 UTC') . '&to=' . strtotime($date.'T23:59:59 UTC');
-		if (!file_exists('/var/www/html/plugins/meeko/data/activities_'.str_replace(['?','=','&'],'',$date).'.json') || $date == '?from=' . strtotime(date('Y-m-d').'T00:00:01 UTC') . '&to=' . strtotime(date('Y-m-d').'T23:59:59 UTC')) {
-			$this::getData('kids', $date);
+		$dateParams = '?from=' . strtotime($date.'T00:00:01 UTC') . '&to=' . strtotime($date.'T23:59:59 UTC');
+		($dateParams == '?from=' . strtotime(date('Y-m-d').'T00:00:01 UTC') . '&to=' . strtotime(date('Y-m-d').'T23:59:59 UTC')) ? $today = true : $today = false;
+		if (!file_exists('/var/www/html/plugins/meeko/data/activities_'.str_replace(['?','=','&'],'',$dateParams).'.json') || $today == true)
+		{
+			$activities = $this::pull('kids', $dateParams);
+		}
+		else
+		{
+			$data = file_get_contents('/var/www/html/plugins/meeko/data/activities_'.str_replace(['?','=','&'],'',$dateParams).'.json');
+			$activities = json_decode($data, true);
 		}
 		$kid = $this->getConfiguration('id');
 
-		$data = file_get_contents('/var/www/html/plugins/meeko/data/activities_'.str_replace(['?','=','&'],'',$date).'.json');
-		$activities = json_decode($data, true);
 
-		// Presences
 		$presenceCmd = $this->getCmd(null, 'presence');
 		if (!empty($activities[$kid]['presences'])) {
 			$countPresences = count($activities[$kid]['presences']) - 1;
@@ -339,11 +404,11 @@ class meeko extends eqLogic
 			{
 				$presenceCmd->event(0, date('Y-m-d H:i:s',$activities[$kid]['presences'][$countPresences]['picked_up_at']));
 			}
-			}
-			else {
-				$presenceCmd->event(0);
-			//	return;
-			}
+		}
+		else
+		{
+			$presenceCmd->event(0);
+		}
 
 		$selectCmdsList = $this->getCmd('action');
 			//	log::add('meeko', 'debug', 'Liste diapers : '.count($selectCmdsList));
@@ -357,8 +422,7 @@ class meeko extends eqLogic
 				if ($countCategory == 0) {
 					$cmd->setIsVisible(0)->save();
 					$infoCmd = $this->getCmd('info',$category);
-					$infoCmd->event(null);
-					$infoCmd->setIsVisible(0)->save();
+					($category != 'presences') ? $infoCmd->event(null) : $infoCmd->event('Absent de la crèche');
 				}
 				else if ($countCategory == 1)
 				{
@@ -375,7 +439,7 @@ class meeko extends eqLogic
 							}
 							else
 							{
-								$value = ' Arrivée à '. date('H:i', $droped_at) . $drop_note .' - Départ à ' .date('H:i', $picked_up_at) . $pick_up_note . ' | durée : '.gmdate('H:i', $picked_up_at - $droped_at);
+								$value = ' Arrivée à '. date('H:i', $droped_at) . $drop_note .' - Départ à ' .date('H:i', $picked_up_at) . $pick_up_note . '<br>(durée '. gmdate('H:i', $picked_up_at - $droped_at) . ')';
 							}
 							break;
 						case 'diapers':
@@ -401,30 +465,37 @@ class meeko extends eqLogic
 							$rating = str_replace($this->meals_en, $this->meals_fr, $activities[$kid][$category][0]['rating']);
 							$note = (!empty($activities[$kid][$category][0]['note'])) ? ' (' . $activities[$kid][$category][0]['note'] . ')' : null;
 							$done_at = date('H:i', $activities[$kid][$category][0]['done_at']);
-							$value = ' à '. $done_at.' : ' . $rating.' ('.$note.')';
+							$value = ' à '. $done_at.' : ' . $rating . $note;
 							break;
 						case 'naps':
 							$started_at = $activities[$kid][$category][0]['started_at'];
 							$ended_at = $activities[$kid][$category][0]['ended_at'];
-						//	$rating = $activities[$kid][$category][0]['rating'];
+							$rating = ($activities[$kid][$category][0]['rating'] == null) ? 'n\'a pas dormi' : 'a dormi';
 							$note = (!empty($activities[$kid][$category][0]['note'])) ? ' (' . $activities[$kid][$category][0]['note'] . ')' : null;
 							if (empty($ended_at))
 							{
-								$value = 'Dort depuis ' . date('H:i', $started_at) . $note;
+								$value = 'dort depuis ' . date('H:i', $started_at) . $note;
 							}
 							else
 							{
-								$value = 'A dormi de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . ' (durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
+								$value = $rating . ' de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . '<br>(durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
 							}
 							break;
 						case 'photos':
-							$id = $activities[$kid][$category][0]['id'];
-							$photo = $this->getPhotoById($id);
-							$thumbnail_url = $photo['thumbnail_url'];
-							$photo_url = $photo['photo_url'];
+						/*	if ($today == false) {
+								$id = $activities[$kid][$category][0]['id'];
+								$photo = $this->getPhotoById($id);
+								$thumbnail_url = $photo['thumbnail_url'];
+								$photo_url = $photo['photo_url'];
+							}
+							else
+							{*/
+								$thumbnail_url = $activities[$kid][$category][0]['thumbnail_url'];
+								$photo_url = $activities[$kid][$category][0]['photo_url'];
+					//		}
 							$description = $activities[$kid][$category][0]['description'];
 							$taken_at = date('H:i', $activities[$kid][$category][0]['taken_at']);
-							$value = ($description != null) ? $description: '' . ' à '. $taken_at.' : <a href='.$photo_url.' target=_blank><img src='.$thumbnail_url.'></a>';
+							$value = ($description != null) ? $description: '' . ' à '. $taken_at.' : <a href='.$photo_url.' target=_blank><img width=80 class="img-thumbnail" src='.$thumbnail_url.'></a>';
 							break;
 						case 'temperatures':
 							$degree = $activities[$kid][$category][0]['degree'].' °C';
@@ -455,7 +526,6 @@ class meeko extends eqLogic
 					$cmd->setIsVisible(0)->save();
 					$infoCmd = $this->getCmd('info',$category);
 					$infoCmd->event($value);
-					$infoCmd->setIsVisible(1)->save();
 				}
 				else
 				{
@@ -475,7 +545,7 @@ class meeko extends eqLogic
 								}
 								else
 								{
-									$value = ' Arrivée à '. date('H:i', $droped_at) . $drop_note .' - Départ à ' .date('H:i', $picked_up_at) . $pick_up_note . ' | durée : '.gmdate('H:i', $picked_up_at - $droped_at);
+									$value = ' Arrivée à '. date('H:i', $droped_at) . $drop_note .' - Départ à ' .date('H:i', $picked_up_at) . $pick_up_note . '<br>(durée '. gmdate('H:i', $picked_up_at - $droped_at) .')';
 									$listValues .= $value. '| Arrivée à '. date('H:i', $droped_at).' - Départ à '.date('H:i', $picked_up_at).';';
 								}
 								break;
@@ -510,26 +580,33 @@ class meeko extends eqLogic
 							case 'naps':
 								$started_at = $activities[$kid][$category][$i]['started_at'];
 								$ended_at = $activities[$kid][$category][$i]['ended_at'];
-							//	$rating = $activities[$kid][$category][0]['rating'];
+								$rating = ($activities[$kid][$category][0]['rating'] == null) ? 'n\'a pas dormi' : 'a dormi';
 								$note = (!empty($activities[$kid][$category][$i]['note'])) ? ' (' . $activities[$kid][$category][$i]['note'] . ')' : null;
 								if (empty($ended_at))
 								{
-									$value = 'Dort depuis ' . date('H:i', $started_at) . $note;
+									$value = 'dort depuis ' . date('H:i', $started_at) . $note;
 								}
 								else
 								{
-									$value = 'A dormi de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . ' (durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
+									$value = $rating . ' de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . '<br>(durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
 								}
 								$listValues .= $value. '| à '. date('H:i', $started_at).';';
 								break;
 							case 'photos':
-								$id = $activities[$kid][$category][$i]['id'];
-								$photo = $this->getPhotoById($id);
-								$thumbnail_url = $photo['thumbnail_url'];
-								$photo_url = $photo['photo_url'];
+								if ($today == false) {
+									$id = $activities[$kid][$category][$i]['id'];
+									$photo = $this->getPhotoById($id);
+									$thumbnail_url = $photo['thumbnail_url'];
+									$photo_url = $photo['photo_url'];
+								}
+								else
+								{
+									$thumbnail_url = $activities[$kid][$category][$i]['thumbnail_url'];
+									$photo_url = $activities[$kid][$category][$i]['photo_url'];
+								}
 								$description = $activities[$kid][$category][$i]['description'];
 								$taken_at = date('H:i', $activities[$kid][$category][$i]['taken_at']);
-								$value = ($description != null) ? $description: '' . ' à '. $taken_at.' : <a href='.$photo_url.' target=_blank><img src='.$thumbnail_url.'></a>';
+								$value = ($description != null) ? $description: '' . ' à '. $taken_at.' : <a href='.$photo_url.' target=_blank><img width=80 src='.$thumbnail_url.'></a>';
 								$listValues .= $value.'| Prise à '. $taken_at.';';
 								break;
 							case 'temperatures':
@@ -565,12 +642,10 @@ class meeko extends eqLogic
 					$cmd->setConfiguration('listValue', substr($listValues,0,-1))->save();
 					$infoCmd = $this->getCmd('info',$category);
 					$infoCmd->event($value);
-					$infoCmd->setIsVisible(1)->save();
-				}
-
 				}
 			}
-
+		}
+		$this->refreshWidget();
 	}
 
 	/*     * **********************Getteur Setteur*************************** */
@@ -579,6 +654,8 @@ class meeko extends eqLogic
 class meekoCmd extends cmd
 {
 	/*     * *************************Attributs****************************** */
+
+	public static $_widgetPossibility = array('custom' => true);
 
 	/*     * ***********************Methode static*************************** */
 
