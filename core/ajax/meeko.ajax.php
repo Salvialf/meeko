@@ -40,6 +40,7 @@ try {
     			$eqLogic->setIsVisible(1);
           $eqLogic->setDisplay('height','532px');
           $eqLogic->setDisplay('width', '312px');
+    			$eqLogic->setConfiguration('widgetApp', 1);
   			}
   			$eqLogic->setLogicalId('kid' . $kids[$i]['id']);
   			$eqLogic->setEqType_name('meeko');
@@ -53,8 +54,6 @@ try {
       }
       ajax::success();
     }
-
-
 
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */

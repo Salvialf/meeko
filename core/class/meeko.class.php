@@ -40,7 +40,7 @@ class meeko extends eqLogic
 	private $meals_en = array('null', '0', '1', '2');
 	private $meals_fr = array('n\'a rien mangé ', 'a peu mangé ', 'a bien mangé ', 'a tout mangé ');
 
-	public static $_widgetPossibility = array('custom' => true, 'custom::layout' => false);
+//	public static $_widgetPossibility = array('custom' => true, 'custom::layout' => false);
 
 	/*     * ***********************Methode static*************************** */
 
@@ -167,7 +167,11 @@ class meeko extends eqLogic
 
 	public static function cron15($_eqLogic_id = null)
 	{
-		if (date('G') < 7 || date('G') >= 22)  return;
+		if (date('G') < 7 || date('G') >= 22)
+		{
+			if(date('Gi') == 115) $this->checkAndUpdateCmd('day', date('Y-m-d'));
+			return;	
+		}
 		if ($_eqLogic_id == null)
 		{
 			$eqLogics = self::byType('meeko', true);
@@ -245,12 +249,12 @@ class meeko extends eqLogic
 					$categoryCmd->setTemplate('mobile', 'meeko::meekoLines');
 		      $categoryCmd->setOrder($order);
 		      $order ++;
+					$categoryCmd->setLogicalId($category);
+					$categoryCmd->setEqLogic_id($this->getId());
+					$categoryCmd->setType('info');
+					$categoryCmd->setSubType('string');
+					$categoryCmd->save();
 				}
-				$categoryCmd->setLogicalId($category);
-				$categoryCmd->setEqLogic_id($this->getId());
-				$categoryCmd->setType('info');
-				$categoryCmd->setSubType('string');
-				$categoryCmd->save();
 
 				$selectCategoryCmd = '';
 				$selectCategoryCmd = $this->getCmd(null, 'select_'.$category);
@@ -268,16 +272,15 @@ class meeko extends eqLogic
 					$selectCategoryCmd->setTemplate('mobile', 'meeko::meekoSelect');
 				}
 					$selectCategoryCmd->setValue($categoryCmd->getId());
+					$selectCategoryCmd->setLogicalId('select_'.$category);
+					$selectCategoryCmd->setEqLogic_id($this->getId());
+					$selectCategoryCmd->setType('action');
+					$selectCategoryCmd->setSubType('select');
+					$selectCategoryCmd->save();
 				}
-				$selectCategoryCmd->setLogicalId('select_'.$category);
-				$selectCategoryCmd->setEqLogic_id($this->getId());
-				$selectCategoryCmd->setType('action');
-				$selectCategoryCmd->setSubType('select');
-				$selectCategoryCmd->save();
 
 				}
 			}
-
 		if ($this->getIsEnable() == 1) {
     	$this->updateCategories();
 		}
@@ -390,6 +393,7 @@ class meeko extends eqLogic
 			$activities = json_decode($data, true);
 		}
 		$kid = $this->getConfiguration('id');
+		$firstName = $this->getConfiguration('first_name');
 
 
 		$presenceCmd = $this->getCmd(null, 'presence');
@@ -446,13 +450,14 @@ class meeko extends eqLogic
 							$type = str_replace($this->diapers_en, $this->diapers_fr, $activities[$kid][$category][0]['type']);
 							$poop = str_replace($this->diapers_en, $this->diapers_fr, $activities[$kid][$category][0]['poop']);
 							$pee = ($activities[$kid][$category][0]['pee'] == true) ? 'pipi ' : null;
+							$peeAndPoop = (!empty($poop) && !empty($pee)) ? ' et ' : '';
 							$ear = ($activities[$kid][$category][0]['ear'] == true) ? '+ oreilles ' : null;
 							$eyes = ($activities[$kid][$category][0]['eyes'] == true) ? '+ yeux ' : null;
 							$cream = ($activities[$kid][$category][0]['cream'] == true) ? '+ crème ' : null;
 							$nose = ($activities[$kid][$category][0]['nose'] == true) ? '+ nez ' : null;
 							$done_at = date('H:i', $activities[$kid][$category][0]['done_at']);
 							$note = (!empty($activities[$kid][$category][0]['note'])) ? ' (' . $activities[$kid][$category][0]['note'] . ')' : null;
-							$value = ' à '. $done_at.' : '. $pee . $poop . $type . $ear . $eyes . $cream . $nose . $note;
+							$value = ' à '. $done_at.' : '. $pee . $peeAndPoop . $poop . $type . $ear . $eyes . $cream . $nose . $note;
 							break;
 						case 'activities':
 							$name = $activities[$kid][$category][0]['name'];
@@ -465,7 +470,7 @@ class meeko extends eqLogic
 							$rating = str_replace($this->meals_en, $this->meals_fr, $activities[$kid][$category][0]['rating']);
 							$note = (!empty($activities[$kid][$category][0]['note'])) ? ' (' . $activities[$kid][$category][0]['note'] . ')' : null;
 							$done_at = date('H:i', $activities[$kid][$category][0]['done_at']);
-							$value = ' à '. $done_at.' : ' . $rating . $note;
+							$value = ' à '. $done_at.' : ' . $firstName . ' ' .  $rating . $note;
 							break;
 						case 'naps':
 							$started_at = $activities[$kid][$category][0]['started_at'];
@@ -474,11 +479,11 @@ class meeko extends eqLogic
 							$note = (!empty($activities[$kid][$category][0]['note'])) ? ' (' . $activities[$kid][$category][0]['note'] . ')' : null;
 							if (empty($ended_at))
 							{
-								$value = 'dort depuis ' . date('H:i', $started_at) . $note;
+								$value = $firstName . ' dort depuis ' . date('H:i', $started_at) . $note;
 							}
 							else
 							{
-								$value = $rating . ' de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . '<br>(durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
+								$value = $firstName . ' ' . $rating . ' de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . '<br>(durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
 							}
 							break;
 						case 'photos':
@@ -553,14 +558,15 @@ class meeko extends eqLogic
 								$type = str_replace($this->diapers_en, $this->diapers_fr, $activities[$kid][$category][$i]['type']);
 								$poop = str_replace($this->diapers_en, $this->diapers_fr, $activities[$kid][$category][$i]['poop']);
 								$pee = ($activities[$kid][$category][$i]['pee'] == true) ? 'pipi ' : null;
+								$peeAndPoop = (!empty($poop) && !empty($pee)) ? ' et ' : '';
 								$ear = ($activities[$kid][$category][$i]['ear'] == true) ? '+ oreilles ' : null;
 								$eyes = ($activities[$kid][$category][$i]['eyes'] == true) ? '+ yeux ' : null;
 								$cream = ($activities[$kid][$category][$i]['cream'] == true) ? '+ crème ' : null;
 								$nose = ($activities[$kid][$category][$i]['nose'] == true) ? '+ nez ' : null;
 								$done_at = date('H:i', $activities[$kid][$category][$i]['done_at']);
 								$note = (!empty($activities[$kid][$category][$i]['note'])) ? ' (' . $activities[$kid][$category][$i]['note'] . ')' : null;
-								$value = ' à '. $done_at.' : '. $pee . $poop . $type . $ear . $eyes . $cream . $nose . $note;
-								$listValues .= $value. '|'. $poop . $pee .' à '. $done_at.';';
+								$value = ' à '. $done_at.' : '. $pee . $peeAndPoop . $poop . $type . $ear . $eyes . $cream . $nose . $note;
+								$listValues .= $value. '|'. $pee . $peeAndPoop . $poop .' à '. $done_at.';';
 								break;
 							case 'activities':
 								$name = $activities[$kid][$category][$i]['name'];
@@ -574,7 +580,7 @@ class meeko extends eqLogic
 								$rating = str_replace($this->meals_en, $this->meals_fr, $activities[$kid][$category][$i]['rating']);
 								$note = (!empty($activities[$kid][$category][$i]['note'])) ? ' (' . $activities[$kid][$category][$i]['note'] . ')' : null;
 								$done_at = date('H:i', $activities[$kid][$category][$i]['done_at']);
-								$value = ' à '. $done_at.' : ' . $rating . $note;
+								$value = ' à '. $done_at.' : ' .$firstName . ' ' .  $rating . $note;
 								$listValues .= $value. '|' . $rating . ' à '. $done_at.';';
 								break;
 							case 'naps':
@@ -584,11 +590,11 @@ class meeko extends eqLogic
 								$note = (!empty($activities[$kid][$category][$i]['note'])) ? ' (' . $activities[$kid][$category][$i]['note'] . ')' : null;
 								if (empty($ended_at))
 								{
-									$value = 'dort depuis ' . date('H:i', $started_at) . $note;
+									$value = $firstName . ' dort depuis ' . date('H:i', $started_at) . $note;
 								}
 								else
 								{
-									$value = $rating . ' de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . '<br>(durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
+									$value = $firstName . ' ' . $rating . ' de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . '<br>(durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
 								}
 								$listValues .= $value. '| à '. date('H:i', $started_at).';';
 								break;
@@ -655,7 +661,7 @@ class meekoCmd extends cmd
 {
 	/*     * *************************Attributs****************************** */
 
-	public static $_widgetPossibility = array('custom' => true);
+//	public static $_widgetPossibility = array('custom' => true);
 
 	/*     * ***********************Methode static*************************** */
 

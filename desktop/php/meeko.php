@@ -46,7 +46,7 @@ echo '</pre>';*/
 	</div>
 <?php } ?>
   </div>
-  <legend><i class="fas fa-table"></i> {{Mes Enfants}}</legend>
+  <legend><i class="fas fa-child"></i> {{Mes Enfants}}</legend>
 	   <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
 <div class="eqLogicThumbnailContainer">
     <?php
@@ -75,19 +75,22 @@ foreach ($eqLogics as $eqLogic) {
   </ul>
   <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
     <div role="tabpanel" class="tab-pane active" id="eqlogictab">
-      <br/>
+    <br/>
+		<div class="row">
+			<div class="col-md-5 col-xs-12">
     <form class="form-horizontal">
         <fieldset>
+          <legend><i class="fas fa-wrench"></i> {{Général}} </legend>
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{Nom de l'équipement template}}</label>
-                <div class="col-sm-3">
+                <label class="col-xs-4 col-md-4 control-label text-center">{{Nom de l'équipement}}</label>
+                <div class="col-xs-6">
                     <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
                     <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement template}}"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" >{{Objet parent}}</label>
-                <div class="col-sm-3">
+                <label class="col-xs-4 col-md-4 control-label" >{{Objet parent}}</label>
+                <div class="col-xs-6">
                     <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
                         <option value="">{{Aucun}}</option>
                         <?php
@@ -99,8 +102,8 @@ foreach (jeeObject::all() as $object) {
                </div>
            </div>
 	   <div class="form-group">
-                <label class="col-sm-3 control-label">{{Catégorie}}</label>
-                <div class="col-sm-9">
+                <label class="col-xs-4 col-md-4 control-label text-center">{{Catégorie}}</label>
+                <div class="col-xs-8">
                  <?php
                     foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
                     echo '<label class="checkbox-inline">';
@@ -111,21 +114,29 @@ foreach (jeeObject::all() as $object) {
                </div>
            </div>
 	<div class="form-group">
-		<label class="col-sm-3 control-label"></label>
-		<div class="col-sm-9">
+		<label class="col-xs-4 col-md-4 control-label text-center">{{Options}}</label>
+		<div class="col-xs-6">
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
 		</div>
 	</div>
-       <div class="form-group">
-        <label class="col-sm-3 control-label">{{Widget Application}}</label>
-        <div class="col-sm-3">
-            <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="widgetApp"/>
-        </div>
-    </div>
-
 </fieldset>
 </form>
+</div>
+	<div class="col-md-7 col-xs-12">
+		<form class="form-horizontal">
+		   <fieldset>
+					<legend><i class="far fa-address-card"></i> {{Présentation}} </legend>
+						<div class="col-xs-5 form-group">
+					 		<label class="col-xs-6 control-label help" data-help="{{Cocher la case pour utiliser la présentation de type Application}}">{{Widget Application}}</label>
+					 		<div class="col-xs-1">
+							 <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="widgetApp"/>
+					 		</div>
+			 			</div>
+					</fieldset>
+				</form>
+			</div>
+</div>
 </div>
 
       <div role="tabpanel" class="tab-pane" id="commandtab">
@@ -133,13 +144,11 @@ foreach (jeeObject::all() as $object) {
 <table id="table_cmd" class="table table-bordered table-condensed">
     <thead>
         <tr>
-          <!--  <th class="col-xs-1">{{Id}}</th><th class="col-xs-5">{{Nom}}</th><th>{{Type}}</th><th class="col-xs-5 text-right">{{Options}}</th><th class="col-xs-1">{{Action}}</th>
--->
-			<th class="col-xs-1"> ID</th>
-			<th class="col-xs-3 text-left">{{Nom}}</th>
-			<th class="col-xs-2">{{Type}}</th>
-			<th class="col-xs-4 text-right">{{Options}}</th>
-			<th class="col-xs-1">{{Actions}}</th>
+					<th class="col-xs-1"> ID</th>
+					<th class="col-xs-3 text-left">{{Nom}}</th>
+					<th class="col-xs-2">{{Type}}</th>
+					<th class="col-xs-4 text-right">{{Options}}</th>
+					<th class="col-xs-1">{{Actions}}</th>
 				</tr>
     </thead>
     <tbody>

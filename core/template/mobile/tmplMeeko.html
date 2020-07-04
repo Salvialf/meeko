@@ -28,7 +28,6 @@
 	cmd.find('.refresh').on('click', function () {
   	jeedom.cmd.execute({id: '#refresh_id#'});
 	});
-
 	if ('#presence#' == 1 ) {
   	cmd.find('img.img-circle').css('border-color','green');
 	} else if (cmd.find('.cmd[data-logical_id=presences] p').text().match(/Absent/)) {
@@ -36,9 +35,7 @@
 	} else {
 		cmd.find('img.img-circle').css('border-color','orange');
 	}
-
 	cmd.find('div.cmd .carousel-inner').last().css('border-radius', '0 0 15px 15px');
-	
 	cmd.css("overflow-y", "scroll");
 </script>
 <style>
