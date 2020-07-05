@@ -169,8 +169,15 @@ class meeko extends eqLogic
 	{
 		if (date('G') < 7 || date('G') >= 22)
 		{
-			if(date('Gi') == 115) $this->checkAndUpdateCmd('day', date('Y-m-d'));
-			return;	
+			if(date('Gi') == 115)
+			{
+				$eqLogics = self::byType('meeko', true);
+				foreach ($eqLogics as $eqLogic)
+				{
+					$eqLogic->checkAndUpdateCmd('day', date('Y-m-d'));
+				}
+			}
+			return;
 		}
 		if ($_eqLogic_id == null)
 		{
@@ -227,12 +234,13 @@ class meeko extends eqLogic
 	      $presenceCmd->setOrder($order);
 	      $order ++;
 				$presenceCmd->setIsHistorized(1);
+				$presenceCmd->setLogicalId('presence');
+				$presenceCmd->setEqLogic_id($this->getId());
+				$presenceCmd->setType('info');
+				$presenceCmd->setSubType('binary');
+				$presenceCmd->setDisplay('generic_type', 'PRESENCE');
+				$presenceCmd->save();
 			}
-			$presenceCmd->setLogicalId('presence');
-			$presenceCmd->setEqLogic_id($this->getId());
-			$presenceCmd->setType('info');
-			$presenceCmd->setSubType('binary');
-			$presenceCmd->save();
 
 			foreach ($this->meekoCategories as $category => $catOptions)
 			{
@@ -253,6 +261,7 @@ class meeko extends eqLogic
 					$categoryCmd->setEqLogic_id($this->getId());
 					$categoryCmd->setType('info');
 					$categoryCmd->setSubType('string');
+					$categoryCmd->setDisplay('generic_type', 'GENERIC_INFO');
 					$categoryCmd->save();
 				}
 
@@ -264,23 +273,26 @@ class meeko extends eqLogic
 					$selectCategoryCmd->setName(__('Choisir '.$catOptions[0], __FILE__));
 		      $selectCategoryCmd->setOrder($order);
 		      $order ++;
-					if ($category == 'day') {
-					$selectCategoryCmd->setTemplate('dashboard', 'meeko::meekoInputDate');
-					$selectCategoryCmd->setTemplate('mobile', 'meeko::meekoInputDate');
-				} else {
-					$selectCategoryCmd->setTemplate('dashboard', 'meeko::meekoSelect');
-					$selectCategoryCmd->setTemplate('mobile', 'meeko::meekoSelect');
-				}
-					$selectCategoryCmd->setValue($categoryCmd->getId());
-					$selectCategoryCmd->setLogicalId('select_'.$category);
-					$selectCategoryCmd->setEqLogic_id($this->getId());
-					$selectCategoryCmd->setType('action');
-					$selectCategoryCmd->setSubType('select');
-					$selectCategoryCmd->save();
-				}
-
+					if ($category == 'day')
+					{
+						$selectCategoryCmd->setTemplate('dashboard', 'meeko::meekoInputDate');
+						$selectCategoryCmd->setTemplate('mobile', 'meeko::meekoInputDate');
+					}
+					else
+					{
+						$selectCategoryCmd->setTemplate('dashboard', 'meeko::meekoSelect');
+						$selectCategoryCmd->setTemplate('mobile', 'meeko::meekoSelect');
+						$selectCategoryCmd->setValue($categoryCmd->getId());
+						$selectCategoryCmd->setLogicalId('select_'.$category);
+						$selectCategoryCmd->setEqLogic_id($this->getId());
+						$selectCategoryCmd->setType('action');
+						$selectCategoryCmd->setSubType('select');
+						$selectCategoryCmd->setDisplay('generic_type', 'GENERIC_ACTION');
+						$selectCategoryCmd->save();
+					}
 				}
 			}
+		}
 		if ($this->getIsEnable() == 1) {
     	$this->updateCategories();
 		}
