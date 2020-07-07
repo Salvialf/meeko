@@ -21,7 +21,7 @@ echo '</pre>';*/
    <div class="col-xs-12 eqLogicThumbnailDisplay">
   <legend><i class="fas fa-cog"></i>{{Gestion}}</legend>
   <div class="eqLogicThumbnailContainer">
-      <div class="cursor eqLogicAction logoPrimary" data-action="add">
+      <div class="cursor eqLogicAction logoPrimary" data-action="">
         <i class="fas fa-plus-circle" style="color:#EB4591"></i>
         <br>
         <span>{{Ajouter}}</span>
