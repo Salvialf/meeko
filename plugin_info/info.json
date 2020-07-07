@@ -2,6 +2,7 @@
 	"id" : "meeko",
 	"name" : "Meeko Family",
 	"description" : "Plugin permettant d'intégrer l'application de suivi de crèche 'Meeko Family' à Jeedom.<br> Consultez en un coup d'oeil les activités de vos enfants et automatisez les actions lorsqu'ils sont présents à la crèche.",
+	"utilization" : "Il est néccesaire de renseigner l'adresse email ainsi que le mot de passe associé au compte Meeko Family sur la page de configuration du plugin.<br/> Pour faire apparaitre le ou les enfant(s), il faut se rendre dans le plugin et cliquer sur le bouton 'Synchroniser' puis sélectionner un objet pour chaque équipement crée.",
 	"licence" : "AGPL",
 	"author" : "Salvialf",
 	"require" : "3.2",
