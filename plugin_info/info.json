@@ -1,19 +1,18 @@
 {
 	"id" : "meeko",
 	"name" : "Meeko Family",
-	"description" : "Plugin permettent d'intégrer l'application de suivi de crèche 'Meeko Family' à Jeedom.<br> Consultez en un coup d'oeil les activités de vos enfants et automatisez les actions lorsqu'ils sont présents à la crèche.",
+	"description" : "Plugin permettant d'intégrer l'application de suivi de crèche 'Meeko Family' à Jeedom.<br> Consultez en un coup d'oeil les activités de vos enfants et automatisez les actions lorsqu'ils sont présents à la crèche.",
 	"licence" : "AGPL",
-	"author" : "Jeedom SAS",
+	"author" : "Salvialf",
 	"require" : "3.2",
 	"category" : "organization",
 	"hasDependency" : false,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
-	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
+	"changelog" : "https://salvialf.github.io/Salvialf-Documentation/meeko/fr_FR/changelog",
+	"documentation" : "https://salvialf.github.io/Salvialf-Documentation/meeko/fr_FR/",
 	"link" : {
-		"forum":"Lien vers le forum",
-		"video" : "Lien vers une video"
+		"forum":"Lien vers le forum"
 	},
 	"language" : ["fr_FR"],
 	"compatibility" : ["miniplus","smart","rpi","docker","diy"]

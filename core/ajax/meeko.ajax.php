@@ -24,7 +24,7 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
 
-    ajax::init(true);
+  //  ajax::init(true);
 
     if (init('action') == 'syncMeeko') {
       $kids = meeko::pull('kids');

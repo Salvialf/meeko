@@ -217,9 +217,9 @@ class meeko extends eqLogic
 				$refreshCmd->setName(__('Rafraichir', __FILE__));
 				$refreshCmd->setOrder($order);
 				$order ++;
+				$refreshCmd->setEqLogic_id($this->getId());
+				$refreshCmd->setLogicalId('refresh');
 			}
-			$refreshCmd->setEqLogic_id($this->getId());
-			$refreshCmd->setLogicalId('refresh');
 			$refreshCmd->setType('action');
 			$refreshCmd->setSubType('other');
 			$refreshCmd->save();
@@ -236,11 +236,11 @@ class meeko extends eqLogic
 				$presenceCmd->setIsHistorized(1);
 				$presenceCmd->setLogicalId('presence');
 				$presenceCmd->setEqLogic_id($this->getId());
-				$presenceCmd->setType('info');
-				$presenceCmd->setSubType('binary');
 				$presenceCmd->setDisplay('generic_type', 'PRESENCE');
-				$presenceCmd->save();
 			}
+			$presenceCmd->setType('info');
+			$presenceCmd->setSubType('binary');
+			$presenceCmd->save();
 
 			foreach ($this->meekoCategories as $category => $catOptions)
 			{
@@ -259,11 +259,11 @@ class meeko extends eqLogic
 		      $order ++;
 					$categoryCmd->setLogicalId($category);
 					$categoryCmd->setEqLogic_id($this->getId());
-					$categoryCmd->setType('info');
-					$categoryCmd->setSubType('string');
 					$categoryCmd->setDisplay('generic_type', 'GENERIC_INFO');
-					$categoryCmd->save();
 				}
+				$categoryCmd->setType('info');
+				$categoryCmd->setSubType('string');
+				$categoryCmd->save();
 
 				$selectCategoryCmd = '';
 				$selectCategoryCmd = $this->getCmd(null, 'select_'.$category);
@@ -273,6 +273,9 @@ class meeko extends eqLogic
 					$selectCategoryCmd->setName(__('Choisir '.$catOptions[0], __FILE__));
 		      $selectCategoryCmd->setOrder($order);
 		      $order ++;
+					$selectCategoryCmd->setDisplay('icon', $catOptions[1]);
+					$selectCategoryCmd->setDisplay('showIconAndNamedashboard', 1);
+					$selectCategoryCmd->setDisplay('showIconAndNamemobile', 1);
 					if ($category == 'day')
 					{
 						$selectCategoryCmd->setTemplate('dashboard', 'meeko::meekoInputDate');
@@ -282,15 +285,15 @@ class meeko extends eqLogic
 					{
 						$selectCategoryCmd->setTemplate('dashboard', 'meeko::meekoSelect');
 						$selectCategoryCmd->setTemplate('mobile', 'meeko::meekoSelect');
+					}
 						$selectCategoryCmd->setValue($categoryCmd->getId());
 						$selectCategoryCmd->setLogicalId('select_'.$category);
 						$selectCategoryCmd->setEqLogic_id($this->getId());
-						$selectCategoryCmd->setType('action');
-						$selectCategoryCmd->setSubType('select');
 						$selectCategoryCmd->setDisplay('generic_type', 'GENERIC_ACTION');
-						$selectCategoryCmd->save();
-					}
 				}
+				$selectCategoryCmd->setType('action');
+				$selectCategoryCmd->setSubType('select');
+				$selectCategoryCmd->save();
 			}
 		}
 		if ($this->getIsEnable() == 1) {
@@ -388,7 +391,8 @@ class meeko extends eqLogic
 		{
 			$date = $this->getCmd(null, 'day')->execCmd();
 		}
-		else {
+		else
+		{
 			$date = date('Y-m-d');
 			$this->getCmd(null, 'day')->event($date);
 		}
@@ -436,7 +440,8 @@ class meeko extends eqLogic
 				$countCategory = count($activities[$kid][$category]);
 				//	log::add('meeko', 'debug', $category.' : '.$countCategory);
 				if ($countCategory == 0) {
-					$cmd->setIsVisible(0)->save();
+					$cmd->setIsVisible(0);
+					$cmd->setConfiguration('listValue', null)->save();
 					$infoCmd = $this->getCmd('info',$category);
 					($category != 'presences') ? $infoCmd->event(null) : $infoCmd->event('Absent de la crèche');
 				}
@@ -491,11 +496,11 @@ class meeko extends eqLogic
 							$note = (!empty($activities[$kid][$category][0]['note'])) ? ' (' . $activities[$kid][$category][0]['note'] . ')' : null;
 							if (empty($ended_at))
 							{
-								$value = $firstName . ' dort depuis ' . date('H:i', $started_at) . $note;
+								$value = 'depuis '. date('H:i', $started_at) .' : ' . $firstName . ' est en train de dormir' . $note;
 							}
 							else
 							{
-								$value = $firstName . ' ' . $rating . ' de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . '<br>(durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
+								$value = 'de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . ' : ' .$firstName . ' ' . $rating . ' ' . gmdate('G:i', $ended_at - $started_at) . $note;
 							}
 							break;
 						case 'photos':
@@ -526,11 +531,11 @@ class meeko extends eqLogic
 							$value = ' à '. $done_at.' : '.$note;
 							break;
 						case 'drugs':
-							foreach ($activities[$kid][$category][0] as $key => $val)
-							{
-								$log .= $key . '=>' . $val;
-							}
-							$value = $log;
+							$name = $activities[$kid][$category][0]['name'];
+							$type = $activities[$kid][$category][0]['type'];
+							$note = (!empty($activities[$kid][$category][0]['note'])) ? ' (' . $activities[$kid][$category][0]['note'] . ')' : null;
+							$done_at = date('H:i', $activities[$kid][$category][0]['done_at']);
+							$value = ' à '. $done_at.' : '.$name . $note;
 							break;
 						case 'weights':
 							foreach ($activities[$kid][$category][0] as $key => $val)
@@ -540,7 +545,8 @@ class meeko extends eqLogic
 							$value = $log;
 							break;
 					}
-					$cmd->setIsVisible(0)->save();
+					$cmd->setIsVisible(0);
+					$cmd->setConfiguration('listValue', null)->save();
 					$infoCmd = $this->getCmd('info',$category);
 					$infoCmd->event($value);
 				}
@@ -598,15 +604,15 @@ class meeko extends eqLogic
 							case 'naps':
 								$started_at = $activities[$kid][$category][$i]['started_at'];
 								$ended_at = $activities[$kid][$category][$i]['ended_at'];
-								$rating = ($activities[$kid][$category][0]['rating'] == null) ? 'n\'a pas dormi' : 'a dormi';
+								$rating = ($activities[$kid][$category][$i]['rating'] == null) ? 'n\'a pas dormi' : 'a dormi';
 								$note = (!empty($activities[$kid][$category][$i]['note'])) ? ' (' . $activities[$kid][$category][$i]['note'] . ')' : null;
 								if (empty($ended_at))
 								{
-									$value = $firstName . ' dort depuis ' . date('H:i', $started_at) . $note;
+									$value = 'depuis '. date('H:i', $started_at) .' : ' . $firstName . ' est en train de dormir' . $note;
 								}
 								else
 								{
-									$value = $firstName . ' ' . $rating . ' de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . '<br>(durée ' . gmdate('H:i', $ended_at - $started_at) .')' . $note;
+									$value = 'de '. date('H:i', $started_at) .' à ' .date('H:i', $ended_at) . ' : ' .$firstName . ' ' . $rating . ' ' . gmdate('G:i', $ended_at - $started_at) . $note;
 								}
 								$listValues .= $value. '| à '. date('H:i', $started_at).';';
 								break;
@@ -641,11 +647,12 @@ class meeko extends eqLogic
 								$listValues .= $value. '| à '. $done_at.';';
 								break;
 							case 'drugs':
-								foreach ($activities[$kid][$category][0] as $key => $val)
-								{
-									$log .= $key . '=>' . $val;
-								}
-								$value = $log;
+								$name = $activities[$kid][$category][$i]['name'];
+								$type = $activities[$kid][$category][$i]['type'];
+								$note = (!empty($activities[$kid][$category][$i]['note'])) ? ' (' . $activities[$kid][$category][$i]['note'] . ')' : null;
+								$done_at = date('H:i', $activities[$kid][$category][$i]['done_at']);
+								$value = ' à '. $done_at.' : '.$name . $note;
+								$listValues .= $value. '|' . $name . ' à '. $done_at.';';
 								break;
 							case 'weights':
 								foreach ($activities[$kid][$category][0] as $key => $val)

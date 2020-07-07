@@ -17,7 +17,7 @@
   </div>
 <script>
   var cmd = $('#quote-carousel#activityid#');
-  var activityList = "#activitylist#";
+  var activityList = `#activitylist#`;
   if (activityList == '') {
     cmd.find('[class*="fa-chevron-"], .carousel-indicators').hide();
     cmd.find('.carousel-inner').css('padding-bottom', 0);
@@ -36,19 +36,19 @@
       html += '<p style="line-height:1;font-size: 13px;" class="text-center">'+values[1]+'</p>';
       html += '</div>';
       cmd.find('.carousel-inner').append(html);
-      cmd.find('.carousel-indicators').append('<li class="btn" data-target="#quote-carousel#activityid#" data-slide-to="'+(i)+'">'+values[0].replace('à ','')+'</li>');
+      cmd.find('.carousel-indicators').append('<li class="btn" data-target="#quote-carousel#activityid#" data-slide-to="'+(i)+'">'+values[0].replace('à ','').replace('de ','')+'</li>');
     }
     cmd.find('[class*="fa-chevron-"], .carousel-indicators').show();
     cmd.find('.carousel-indicators > li:last-child').addClass('active');
     cmd.find('.carousel-inner > div:last-child').addClass('active');
 
-      window.heights = [], //create empty array to store height values
-      window.tallest; //create variable to make note of the tallest slide
+      window.heights = [],
+      window.tallest;
       function normalizeHeights() {
-          jQuery('#quote-carousel#activityid# .item').each(function() { //add heights to array
+          jQuery('#quote-carousel#activityid# .item').each(function() {
               window.heights.push(jQuery(this).outerHeight());
           });
-          window.tallest = Math.max.apply(null, window.heights); //cache largest value
+          window.tallest = Math.max.apply(null, window.heights);
           jQuery('#quote-carousel#activityid#  .item').each(function() {
               jQuery(this).css('min-height',tallest + 'px');
           });

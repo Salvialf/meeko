@@ -2,29 +2,26 @@
     <div class="form-group">
       <input type="date" id="datepicker#id#" style="display:none;"/>
         <button class='btn btn-success' id="datebutton#id#" style="display:flex;align-items:center;" >
-          <span style="margin-right:5px;"> #name_display# </span>
-          <i class="fas fa-calendar-day"></i>
+          <span style="margin-right:5px;"> #name# </span>
+          <i></i>
        </button>
     </div>
-  <!--    <svg  width="15px" height="15px" viewBox="0 0 56 57">
-        <use xlink:href="plugins/meeko/desktop/css/meeko.icons.svg#icons8-calendar"></use>
-      </svg>
-     -->
 <script>
-    $('#datepicker#id#').datepicker();
-    $('#datebutton#id#').on('click', function() {
-      $('#datepicker#id#').datepicker('show');
-    });
+  $('.cmd[data-cmd_id=#id#] i').addClass('#name_display#'.match('<i class="(.*)"></i>')[1]);
+  $('#datepicker#id#').datepicker();
+  $('#datebutton#id#').on('click', function() {
+    $('#datepicker#id#').datepicker('show');
+  });
 
-    $('#datepicker#id#').on('change', function() {
-      let select_day = $('#datepicker#id#').val();
-      jeedom.cmd.execute({id: '#id#', value: {selectedDate : select_day} });
-    });
+  $('#datepicker#id#').on('change', function() {
+    let select_day = $('#datepicker#id#').val();
+    jeedom.cmd.execute({id: '#id#', value: {selectedDate : select_day} });
+  });
 
-    jeedom.cmd.update['#id#'] = function(_options){
-      $('#datepicker#id#').val(_options.display_value);
-    }
-    jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'});
+  jeedom.cmd.update['#id#'] = function(_options){
+    $('#datepicker#id#').val(_options.display_value);
+  }
+  jeedom.cmd.update['#id#']({display_value:'#state#'});
 </script>
 <style>
 /*#datepicker#id# + button {

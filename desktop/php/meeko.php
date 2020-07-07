@@ -144,10 +144,10 @@ foreach (jeeObject::all() as $object) {
 <table id="table_cmd" class="table table-bordered table-condensed">
     <thead>
         <tr>
-					<th class="col-xs-1"> ID</th>
-					<th class="col-xs-3 text-left">{{Nom}}</th>
+					<th class="col-xs-1">{{Icône}}</th>
+					<th class="col-xs-2">{{Nom}}</th>
 					<th class="col-xs-2">{{Type}}</th>
-					<th class="col-xs-4 text-right">{{Options}}</th>
+					<th class="col-xs-3 text-right">{{Options}}</th>
 					<th class="col-xs-1">{{Actions}}</th>
 				</tr>
     </thead>
